@@ -1,0 +1,1010 @@
+{
+  "id": "bLxZ5QJTuAJDyFaW",
+  "name": "Backup GitHub",
+  "active": true,
+  "activeVersionId": "55364c66-0317-46a7-a854-f0f8141a29da",
+  "createdAt": "2026-09-20T01:00:18.315Z",
+  "updatedAt": "2026-11-09T22:41:52.977Z",
+  "isArchived": false,
+  "versionId": "5d2a11c9-0670-4e0b-b74e-ac141a8d82f5",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        16
+      ],
+      "id": "789f14a8-0a4a-4e21-ae1f-f2a3467919d7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/Moruan06",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "BackUp-N8N",
+          "mode": "list",
+          "cachedResultName": "BackUp-N8N",
+          "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
+        },
+        "filePath": "={{ $json.path }}",
+        "fileContent": "={{ $json.content }}",
+        "commitMessage": "={{ $json.commitMessage }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        -176
+      ],
+      "id": "f2ca58e2-d6df-496c-a930-b92df1723190",
+      "name": "Create a file",
+      "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+      "credentials": {
+        "githubApi": {
+          "id": "gGIzg3elk92MKWbm",
+          "name": "Moruan GitHub"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/Moruan06",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "BackUp-N8N",
+          "mode": "list",
+          "cachedResultName": "BackUp-N8N",
+          "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
+        },
+        "filePath": "=workflows"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        16
+      ],
+      "id": "787adc21-a345-4ddc-9cff-d588d296e987",
+      "name": "List files",
+      "webhookId": "461a4a2b-1d74-4d73-84f2-1f08450b7610",
+      "credentials": {
+        "githubApi": {
+          "id": "gGIzg3elk92MKWbm",
+          "name": "Moruan GitHub"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega apenas os fluxos que passaram no seu nó 'If' (modificados na última 1h)\nconst n8nWorkflows = $input.all(); \n\n// Pega todos os arquivos de backup atuais lá do nó do GitHub\nconst githubFiles = $('List files').all(); \n\nconst operations = [];\n\nfor (const item of n8nWorkflows) {\n  const wf = item.json;\n  \n  // Mantendo exatamente o seu padrão de formatação\n  const safeName = wf.name;\n  const expectedPath = `workflows/${wf.id} - ${safeName}.json`;\n\n  // Procura um arquivo no GitHub que comece com o ID deste fluxo\n  const existingFile = githubFiles.find(f => f.json.name && f.json.name.startsWith(`${wf.id} -`));\n\n  const fileContent = JSON.stringify(wf, null, 2);\n\n  if (existingFile) {\n    if (existingFile.json.path === expectedPath) {\n      // O nome é o mesmo. Apenas atualiza o arquivo existente.\n      operations.push({\n        json: { action: 'update', path: expectedPath, content: fileContent, commitMessage: `Update: ${wf.name}`, sha: existingFile.json.sha }\n      });\n    } else {\n      // O nome mudou! Precisamos deletar o arquivo velho e criar um novo.\n      operations.push({\n        json: { action: 'delete', path: existingFile.json.path, commitMessage: `Rename (Del): ${existingFile.json.name}`, sha: existingFile.json.sha }\n      });\n      operations.push({\n        json: { action: 'create', path: expectedPath, content: fileContent, commitMessage: `Rename (Add): ${wf.name}` }\n      });\n    }\n  } else {\n    // Fluxo novo, não tem backup ainda. Cria do zero.\n    operations.push({\n      json: { action: 'create', path: expectedPath, content: fileContent, commitMessage: `Criado: ${wf.name}` }\n    });\n  }\n}\n\nreturn operations;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        16
+      ],
+      "id": "6f0d3a9a-4284-42d0-a8d8-5c4237c04b5b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "create",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d47d04a4-c707-4114-b796-33d02cf27da3"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "create"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5a0276e7-0b18-4ebd-a031-2453da0d2bf0",
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "delete",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "delete"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fa81a45d-42c1-46a4-96c6-dbe05b63a3ab",
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "update",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "edit"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "492c101c-e15b-4f66-9684-6ce5faa4693d",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/Moruan06",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "BackUp-N8N",
+          "mode": "list",
+          "cachedResultName": "BackUp-N8N",
+          "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
+        },
+        "filePath": "={{ $json.path }}",
+        "fileContent": "={{ $json.content }}",
+        "commitMessage": "={{ $json.commitMessage }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        208
+      ],
+      "id": "0c76cc53-12d0-433b-a278-fac48643bed9",
+      "name": "Edit a file",
+      "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+      "credentials": {
+        "githubApi": {
+          "id": "gGIzg3elk92MKWbm",
+          "name": "Moruan GitHub"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/Moruan06",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "BackUp-N8N",
+          "mode": "list",
+          "cachedResultName": "BackUp-N8N",
+          "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
+        },
+        "filePath": "={{ $json.path }}",
+        "commitMessage": "={{ $json.commitMessage }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        16
+      ],
+      "id": "fb23720c-1229-4f76-a340-d27494146a00",
+      "name": "Delete a file",
+      "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+      "credentials": {
+        "githubApi": {
+          "id": "gGIzg3elk92MKWbm",
+          "name": "Moruan GitHub"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "944972f3-33e1-4c57-910f-61f2a6e332ee",
+              "leftValue": "={{ $json.updatedAt }}",
+              "rightValue": "={{ $now.minus(1, 'hour') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        16
+      ],
+      "id": "9f48ead7-0ac2-48af-a9ba-b3bda660e787",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "filters": {
+          "activeWorkflows": true
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        448,
+        16
+      ],
+      "id": "fe8593fe-7e10-492e-8583-e0335c629957",
+      "name": "Get many workflows",
+      "executeOnce": true,
+      "credentials": {
+        "n8nApi": {
+          "id": "pyU7jK3RndTqVISo",
+          "name": "Moruan n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Puxamos a lista de arquivos do primeiro nó que já rodou lá no início\nconst githubFiles = $('List files').all();\n\n// Puxamos a lista de fluxos vindos do nó do n8n (que está conectado antes deste)\nconst n8nWorkflows = $input.all();\n\n// Criamos um array isolado apenas com os IDs que existem HOJE no seu n8n\nconst activeIds = n8nWorkflows.map(fluxo => fluxo.json.id);\n\nconst arquivosParaDeletar = [];\n\nfor (const file of githubFiles) {\n  // Ignora arquivos que não sejam .json\n  if (!file.json.name.endsWith('.json')) continue;\n\n  // Verifica se o nome do arquivo no GitHub contém algum dos IDs ativos do n8n\n  const fluxoAindaExiste = activeIds.some(id => file.json.name.includes(id));\n\n  // Se o fluxo NÃO existe mais no n8n, enviamos ele para a fila de exclusão\n  if (!fluxoAindaExiste) {\n    arquivosParaDeletar.push(file);\n  }\n}\n\nreturn arquivosParaDeletar;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        288
+      ],
+      "id": "b98da4cc-b6cd-4e5f-9450-4cc39da05cc8",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/Moruan06",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "BackUp-N8N",
+          "mode": "list",
+          "cachedResultName": "BackUp-N8N",
+          "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
+        },
+        "filePath": "={{ $json.path }}",
+        "commitMessage": "=Lixeira: Removendo fluxo deletado ({{ $json.name }}) em {{ $now }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        288
+      ],
+      "id": "50be14d7-4c9c-45fc-8338-727dff58d977",
+      "name": "Delete a file1",
+      "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+      "credentials": {
+        "githubApi": {
+          "id": "gGIzg3elk92MKWbm",
+          "name": "Moruan GitHub"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "List files",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get many workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List files": {
+      "main": [
+        [
+          {
+            "node": "Get many workflows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a file": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Get many workflows": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Delete a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "ubgVbaWTPNzOD3Zf",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "bLxZ5QJTuAJDyFaW",
+      "projectId": "8hi4bD9zCoonCi82",
+      "createdAt": "2026-09-20T01:00:18.318Z",
+      "updatedAt": "2026-09-20T01:00:18.318Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "55364c66-0317-46a7-a854-f0f8141a29da",
+    "workflowId": "bLxZ5QJTuAJDyFaW",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          0,
+          16
+        ],
+        "id": "789f14a8-0a4a-4e21-ae1f-f2a3467919d7",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "https://github.com/Moruan06",
+            "mode": "url"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "Fluxos-n8n",
+            "mode": "list",
+            "cachedResultName": "Fluxos-n8n",
+            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+          },
+          "filePath": "={{ $json.path }}",
+          "fileContent": "={{ $json.content }}",
+          "commitMessage": "={{ $json.commitMessage }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1344,
+          -176
+        ],
+        "id": "f2ca58e2-d6df-496c-a930-b92df1723190",
+        "name": "Create a file",
+        "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+        "credentials": {
+          "githubApi": {
+            "id": "gGIzg3elk92MKWbm",
+            "name": "Moruan GitHub"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "https://github.com/Moruan06",
+            "mode": "url"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "Fluxos-n8n",
+            "mode": "list",
+            "cachedResultName": "Fluxos-n8n",
+            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+          },
+          "filePath": "=workflows"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          224,
+          16
+        ],
+        "id": "787adc21-a345-4ddc-9cff-d588d296e987",
+        "name": "List files",
+        "webhookId": "461a4a2b-1d74-4d73-84f2-1f08450b7610",
+        "credentials": {
+          "githubApi": {
+            "id": "gGIzg3elk92MKWbm",
+            "name": "Moruan GitHub"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Pega apenas os fluxos que passaram no seu nó 'If' (modificados na última 1h)\nconst n8nWorkflows = $input.all(); \n\n// Pega todos os arquivos de backup atuais lá do nó do GitHub\nconst githubFiles = $('List files').all(); \n\nconst operations = [];\n\nfor (const item of n8nWorkflows) {\n  const wf = item.json;\n  \n  // Mantendo exatamente o seu padrão de formatação\n  const safeName = wf.name;\n  const expectedPath = `workflows/${wf.id} - ${safeName}.json`;\n\n  // Procura um arquivo no GitHub que comece com o ID deste fluxo\n  const existingFile = githubFiles.find(f => f.json.name && f.json.name.startsWith(`${wf.id} -`));\n\n  const fileContent = JSON.stringify(wf, null, 2);\n\n  if (existingFile) {\n    if (existingFile.json.path === expectedPath) {\n      // O nome é o mesmo. Apenas atualiza o arquivo existente.\n      operations.push({\n        json: { action: 'update', path: expectedPath, content: fileContent, commitMessage: `Update: ${wf.name}`, sha: existingFile.json.sha }\n      });\n    } else {\n      // O nome mudou! Precisamos deletar o arquivo velho e criar um novo.\n      operations.push({\n        json: { action: 'delete', path: existingFile.json.path, commitMessage: `Rename (Del): ${existingFile.json.name}`, sha: existingFile.json.sha }\n      });\n      operations.push({\n        json: { action: 'create', path: expectedPath, content: fileContent, commitMessage: `Rename (Add): ${wf.name}` }\n      });\n    }\n  } else {\n    // Fluxo novo, não tem backup ainda. Cria do zero.\n    operations.push({\n      json: { action: 'create', path: expectedPath, content: fileContent, commitMessage: `Criado: ${wf.name}` }\n    });\n  }\n}\n\nreturn operations;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          896,
+          16
+        ],
+        "id": "6f0d3a9a-4284-42d0-a8d8-5c4237c04b5b",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.action }}",
+                      "rightValue": "create",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "d47d04a4-c707-4114-b796-33d02cf27da3"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "create"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "5a0276e7-0b18-4ebd-a031-2453da0d2bf0",
+                      "leftValue": "={{ $json.action }}",
+                      "rightValue": "delete",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "delete"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "fa81a45d-42c1-46a4-96c6-dbe05b63a3ab",
+                      "leftValue": "={{ $json.action }}",
+                      "rightValue": "update",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "edit"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.4,
+        "position": [
+          1120,
+          0
+        ],
+        "id": "492c101c-e15b-4f66-9684-6ce5faa4693d",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "https://github.com/Moruan06",
+            "mode": "url"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "Fluxos-n8n",
+            "mode": "list",
+            "cachedResultName": "Fluxos-n8n",
+            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+          },
+          "filePath": "={{ $json.path }}",
+          "fileContent": "={{ $json.content }}",
+          "commitMessage": "={{ $json.commitMessage }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1344,
+          208
+        ],
+        "id": "0c76cc53-12d0-433b-a278-fac48643bed9",
+        "name": "Edit a file",
+        "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+        "credentials": {
+          "githubApi": {
+            "id": "gGIzg3elk92MKWbm",
+            "name": "Moruan GitHub"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "delete",
+          "owner": {
+            "__rl": true,
+            "value": "https://github.com/Moruan06",
+            "mode": "url"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "Fluxos-n8n",
+            "mode": "list",
+            "cachedResultName": "Fluxos-n8n",
+            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+          },
+          "filePath": "={{ $json.path }}",
+          "commitMessage": "={{ $json.commitMessage }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1344,
+          16
+        ],
+        "id": "fb23720c-1229-4f76-a340-d27494146a00",
+        "name": "Delete a file",
+        "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+        "credentials": {
+          "githubApi": {
+            "id": "gGIzg3elk92MKWbm",
+            "name": "Moruan GitHub"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "944972f3-33e1-4c57-910f-61f2a6e332ee",
+                "leftValue": "={{ $json.updatedAt }}",
+                "rightValue": "={{ $now.minus(1, 'hour') }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "after"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          672,
+          16
+        ],
+        "id": "9f48ead7-0ac2-48af-a9ba-b3bda660e787",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "filters": {
+            "activeWorkflows": true
+          },
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          448,
+          16
+        ],
+        "id": "fe8593fe-7e10-492e-8583-e0335c629957",
+        "name": "Get many workflows",
+        "executeOnce": true,
+        "credentials": {
+          "n8nApi": {
+            "id": "pyU7jK3RndTqVISo",
+            "name": "Moruan n8n"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Puxamos a lista de arquivos do primeiro nó que já rodou lá no início\nconst githubFiles = $('List files').all();\n\n// Puxamos a lista de fluxos vindos do nó do n8n (que está conectado antes deste)\nconst n8nWorkflows = $input.all();\n\n// Criamos um array isolado apenas com os IDs que existem HOJE no seu n8n\nconst activeIds = n8nWorkflows.map(fluxo => fluxo.json.id);\n\nconst arquivosParaDeletar = [];\n\nfor (const file of githubFiles) {\n  // Ignora arquivos que não sejam .json\n  if (!file.json.name.endsWith('.json')) continue;\n\n  // Verifica se o nome do arquivo no GitHub contém algum dos IDs ativos do n8n\n  const fluxoAindaExiste = activeIds.some(id => file.json.name.includes(id));\n\n  // Se o fluxo NÃO existe mais no n8n, enviamos ele para a fila de exclusão\n  if (!fluxoAindaExiste) {\n    arquivosParaDeletar.push(file);\n  }\n}\n\nreturn arquivosParaDeletar;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          672,
+          288
+        ],
+        "id": "b98da4cc-b6cd-4e5f-9450-4cc39da05cc8",
+        "name": "Code in JavaScript1"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "delete",
+          "owner": {
+            "__rl": true,
+            "value": "https://github.com/Moruan06",
+            "mode": "url"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "Fluxos-n8n",
+            "mode": "list",
+            "cachedResultName": "Fluxos-n8n",
+            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+          },
+          "filePath": "={{ $json.path }}",
+          "commitMessage": "=Lixeira: Removendo fluxo deletado ({{ $json.name }}) em {{ $now }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          880,
+          288
+        ],
+        "id": "50be14d7-4c9c-45fc-8338-727dff58d977",
+        "name": "Delete a file1",
+        "webhookId": "87990369-bfac-4d4c-9500-684bf08ea11d",
+        "credentials": {
+          "githubApi": {
+            "id": "gGIzg3elk92MKWbm",
+            "name": "Moruan GitHub"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "List files",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Get many workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List files": {
+        "main": [
+          [
+            {
+              "node": "Get many workflows",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Create a file",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Delete a file",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Edit a file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Delete a file": {
+        "main": [
+          []
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Get many workflows": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "Delete a file1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Moruan Matar",
+    "name": "Version 55364c66",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-11-09T22:36:19.118Z",
+    "updatedAt": "2026-11-09T22:37:25.000Z"
+  }
+}
