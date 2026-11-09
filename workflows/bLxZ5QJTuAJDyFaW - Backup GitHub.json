@@ -2,11 +2,11 @@
   "id": "bLxZ5QJTuAJDyFaW",
   "name": "Backup GitHub",
   "active": true,
-  "activeVersionId": "55364c66-0317-46a7-a854-f0f8141a29da",
+  "activeVersionId": "d183f5f8-16cb-4a3b-9d47-587dc3cc9055",
   "createdAt": "2026-09-20T01:00:18.315Z",
-  "updatedAt": "2026-11-09T22:41:52.977Z",
+  "updatedAt": "2026-11-09T22:42:31.974Z",
   "isArchived": false,
-  "versionId": "5d2a11c9-0670-4e0b-b74e-ac141a8d82f5",
+  "versionId": "184153dc-5e54-4542-93d0-931a0fcee0a3",
   "triggerCount": 1,
   "nodes": [
     {
@@ -95,8 +95,7 @@
           "id": "gGIzg3elk92MKWbm",
           "name": "Moruan GitHub"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -302,7 +301,8 @@
         16
       ],
       "id": "9f48ead7-0ac2-48af-a9ba-b3bda660e787",
-      "name": "If"
+      "name": "If",
+      "disabled": true
     },
     {
       "parameters": {
@@ -520,7 +520,7 @@
     }
   ],
   "activeVersion": {
-    "versionId": "55364c66-0317-46a7-a854-f0f8141a29da",
+    "versionId": "d183f5f8-16cb-4a3b-9d47-587dc3cc9055",
     "workflowId": "bLxZ5QJTuAJDyFaW",
     "nodes": [
       {
@@ -552,10 +552,10 @@
           },
           "repository": {
             "__rl": true,
-            "value": "Fluxos-n8n",
+            "value": "BackUp-N8N",
             "mode": "list",
-            "cachedResultName": "Fluxos-n8n",
-            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+            "cachedResultName": "BackUp-N8N",
+            "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
           },
           "filePath": "={{ $json.path }}",
           "fileContent": "={{ $json.content }}",
@@ -588,10 +588,10 @@
           },
           "repository": {
             "__rl": true,
-            "value": "Fluxos-n8n",
+            "value": "BackUp-N8N",
             "mode": "list",
-            "cachedResultName": "Fluxos-n8n",
-            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+            "cachedResultName": "BackUp-N8N",
+            "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
           },
           "filePath": "=workflows"
         },
@@ -609,7 +609,8 @@
             "id": "gGIzg3elk92MKWbm",
             "name": "Moruan GitHub"
           }
-        }
+        },
+        "disabled": true
       },
       {
         "parameters": {
@@ -724,10 +725,10 @@
           },
           "repository": {
             "__rl": true,
-            "value": "Fluxos-n8n",
+            "value": "BackUp-N8N",
             "mode": "list",
-            "cachedResultName": "Fluxos-n8n",
-            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+            "cachedResultName": "BackUp-N8N",
+            "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
           },
           "filePath": "={{ $json.path }}",
           "fileContent": "={{ $json.content }}",
@@ -760,10 +761,10 @@
           },
           "repository": {
             "__rl": true,
-            "value": "Fluxos-n8n",
+            "value": "BackUp-N8N",
             "mode": "list",
-            "cachedResultName": "Fluxos-n8n",
-            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+            "cachedResultName": "BackUp-N8N",
+            "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
           },
           "filePath": "={{ $json.path }}",
           "commitMessage": "={{ $json.commitMessage }}"
@@ -815,7 +816,8 @@
           16
         ],
         "id": "9f48ead7-0ac2-48af-a9ba-b3bda660e787",
-        "name": "If"
+        "name": "If",
+        "disabled": true
       },
       {
         "parameters": {
@@ -864,10 +866,10 @@
           },
           "repository": {
             "__rl": true,
-            "value": "Fluxos-n8n",
+            "value": "BackUp-N8N",
             "mode": "list",
-            "cachedResultName": "Fluxos-n8n",
-            "cachedResultUrl": "https://github.com/Moruan06/Fluxos-n8n"
+            "cachedResultName": "BackUp-N8N",
+            "cachedResultUrl": "https://github.com/Moruan06/BackUp-N8N"
           },
           "filePath": "={{ $json.path }}",
           "commitMessage": "=Lixeira: Removendo fluxo deletado ({{ $json.name }}) em {{ $now }}"
@@ -1001,10 +1003,10 @@
     },
     "nodeGroups": [],
     "authors": "Moruan Matar",
-    "name": "Version 55364c66",
+    "name": "Version d183f5f8",
     "description": "",
-    "autosaved": true,
-    "createdAt": "2026-11-09T22:36:19.118Z",
-    "updatedAt": "2026-11-09T22:37:25.000Z"
+    "autosaved": false,
+    "createdAt": "2026-11-09T22:42:06.918Z",
+    "updatedAt": "2026-11-09T22:42:08.000Z"
   }
 }
