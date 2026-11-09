@@ -4,9 +4,9 @@
   "active": true,
   "activeVersionId": "d183f5f8-16cb-4a3b-9d47-587dc3cc9055",
   "createdAt": "2026-09-20T01:00:18.315Z",
-  "updatedAt": "2026-11-09T22:42:31.974Z",
+  "updatedAt": "2026-11-09T22:42:37.987Z",
   "isArchived": false,
-  "versionId": "184153dc-5e54-4542-93d0-931a0fcee0a3",
+  "versionId": "c0e027fd-a41c-4c08-9820-b3d979d1949c",
   "triggerCount": 1,
   "nodes": [
     {
@@ -301,8 +301,7 @@
         16
       ],
       "id": "9f48ead7-0ac2-48af-a9ba-b3bda660e787",
-      "name": "If",
-      "disabled": true
+      "name": "If"
     },
     {
       "parameters": {
