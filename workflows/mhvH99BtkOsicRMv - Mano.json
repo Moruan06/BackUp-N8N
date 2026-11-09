@@ -1,0 +1,169 @@
+{
+  "id": "mhvH99BtkOsicRMv",
+  "name": "Mano",
+  "active": true,
+  "activeVersionId": "1e25fd7a-3d2f-4d60-b197-eedaaf5c7575",
+  "createdAt": "2026-11-08T22:08:40.272Z",
+  "updatedAt": "2026-11-09T21:31:01.468Z",
+  "isArchived": false,
+  "versionId": "1e25fd7a-3d2f-4d60-b197-eedaaf5c7575",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "83a2b67b-3c80-40ee-afbe-fd6d38a86f75",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "Meuzapzap",
+        "remoteJid": "={{ $env.CELULAR_NICOLAS }}",
+        "messageText": "mano",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a2b3c931-d4a1-4671-9d2e-eb6865f7d569",
+      "name": "Enviar texto",
+      "credentials": {
+        "evolutionApi": {
+          "id": "WtKNVOJKyH2tFrs9",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "ubgVbaWTPNzOD3Zf",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "mhvH99BtkOsicRMv",
+      "projectId": "8hi4bD9zCoonCi82",
+      "createdAt": "2026-11-08T22:08:40.275Z",
+      "updatedAt": "2026-11-08T22:08:40.275Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "1e25fd7a-3d2f-4d60-b197-eedaaf5c7575",
+    "workflowId": "mhvH99BtkOsicRMv",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 3
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          0,
+          0
+        ],
+        "id": "83a2b67b-3c80-40ee-afbe-fd6d38a86f75",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "resource": "messages-api",
+          "instanceName": "Meuzapzap",
+          "remoteJid": "={{ $env.CELULAR_NICOLAS }}",
+          "messageText": "mano",
+          "options_message": {}
+        },
+        "type": "n8n-nodes-evolution-api.evolutionApi",
+        "typeVersion": 1,
+        "position": [
+          224,
+          0
+        ],
+        "id": "a2b3c931-d4a1-4671-9d2e-eb6865f7d569",
+        "name": "Enviar texto",
+        "credentials": {
+          "evolutionApi": {
+            "id": "WtKNVOJKyH2tFrs9",
+            "name": "Evolution account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Enviar texto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Moruan Matar",
+    "name": "Version 1e25fd7a",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-11-09T21:31:01.469Z",
+    "updatedAt": "2026-11-09T22:39:11.000Z"
+  }
+}
