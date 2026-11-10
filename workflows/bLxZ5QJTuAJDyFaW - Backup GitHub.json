@@ -2,7 +2,7 @@
   "id": "bLxZ5QJTuAJDyFaW",
   "name": "Backup GitHub",
   "active": true,
-  "activeVersionId": "373e631a-0826-4d74-b4ca-96dd01eba216",
+  "activeVersionId": "2f91f61e-e7c8-47ee-bd0f-235a0baaa11a",
   "createdAt": "2026-09-20T01:00:18.315Z",
   "updatedAt": "2026-11-10T22:41:03.175Z",
   "isArchived": false,
@@ -514,7 +514,7 @@
     }
   ],
   "activeVersion": {
-    "versionId": "373e631a-0826-4d74-b4ca-96dd01eba216",
+    "versionId": "2f91f61e-e7c8-47ee-bd0f-235a0baaa11a",
     "workflowId": "bLxZ5QJTuAJDyFaW",
     "nodes": [
       {
@@ -531,7 +531,7 @@
         "typeVersion": 1.4,
         "position": [
           0,
-          16
+          112
         ],
         "id": "789f14a8-0a4a-4e21-ae1f-f2a3467919d7",
         "name": "Schedule Trigger"
@@ -593,7 +593,7 @@
         "typeVersion": 1.1,
         "position": [
           224,
-          16
+          112
         ],
         "id": "787adc21-a345-4ddc-9cff-d588d296e987",
         "name": "List files",
@@ -822,7 +822,7 @@
         "typeVersion": 1,
         "position": [
           448,
-          16
+          112
         ],
         "id": "fe8593fe-7e10-492e-8583-e0335c629957",
         "name": "Get many workflows",
@@ -842,7 +842,7 @@
         "typeVersion": 2,
         "position": [
           672,
-          288
+          208
         ],
         "id": "b98da4cc-b6cd-4e5f-9450-4cc39da05cc8",
         "name": "Code in JavaScript1"
@@ -869,8 +869,8 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          880,
-          288
+          896,
+          208
         ],
         "id": "50be14d7-4c9c-45fc-8338-727dff58d977",
         "name": "Delete a file1",
@@ -889,11 +889,6 @@
           [
             {
               "node": "List files",
-              "type": "main",
-              "index": 0
-            },
-            {
-              "node": "Get many workflows",
               "type": "main",
               "index": 0
             }
@@ -995,10 +990,10 @@
     },
     "nodeGroups": [],
     "authors": "Moruan Matar",
-    "name": "Version 373e631a",
+    "name": "Version 2f91f61e",
     "description": "",
     "autosaved": true,
-    "createdAt": "2026-11-09T22:46:30.778Z",
-    "updatedAt": "2026-11-09T22:47:16.000Z"
+    "createdAt": "2026-11-10T22:41:03.043Z",
+    "updatedAt": "2026-11-10T22:41:11.000Z"
   }
 }
